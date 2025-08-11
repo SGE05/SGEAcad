@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SGEAcad — Logout</title>
+<style>
+  :root{
+    --teal:#047481;
+    --amber:#f59e0b;
+    --bg:#f7fbfb;
+    --card:#fff;
+    --text:#062a2f;
+    --muted:#6b7280;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text);display:flex;align-items:center;justify-content:center}
+  .box{width:min(520px,94%);background:var(--card);padding:20px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,.08);text-align:center}
+  .logo{width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,var(--amber),#ffb86b);display:inline-grid;place-items:center;font-weight:900;color:#07161a;margin-bottom:12px}
+  h1{margin:8px 0;color:var(--teal)}
+  p{color:var(--muted);margin:10px 0 18px}
+  .btn{display:inline-block;padding:10px 16px;border-radius:10px;border:none;background:var(--teal);color:#fff;font-weight:700;cursor:pointer;margin:6px}
+  .btn.alt{background:var(--amber);color:#07161a}
+  .small{font-size:13px;color:var(--muted);margin-top:8px}
+</style>
+</head>
+<body>
+  <div class="box" role="region" aria-labelledby="logoutTitle">
+    <div class="logo">SG</div>
+    <h1 id="logoutTitle">Signing out...</h1>
+    <p id="msg">You are being logged out of SGEAcad. We will redirect you to the login page shortly.</p>
+
+    <div>
+      <button class="btn" id="logoutNow">Logout Now</button>
+      <button class="btn alt" id="stay">Stay (Cancel)</button>
+    </div>
+
+    <p class="small">If redirection doesn't happen, click <a href="login.html">Login</a> or <a href="index.html">Home</a>.</p>
+  </div>
+
+<script>
+  // Keys used by the system
+  const SESSION_KEY = 'sgead_session_v1';
+
+  function doLogout() {
+    try {
+      // remove session info
+      localStorage.removeItem(SESSION_KEY);
+      // other optional cleanup if used in your project:
+      // localStorage.removeItem('sgead_attempts');
+      // localStorage.removeItem('sgead_last_test');
+    } catch (e) {
+      console.warn('Logout cleanup failed', e);
+    }
+
+    // show confirmation then redirect
+    document.getElementById('logoutTitle').textContent = 'Signed out';
+    document.getElementById('msg').textContent = 'You have been logged out. Redirecting to login...';
+    // short delay so user sees message
+    setTimeout(()=> {
+      // change to login.html (or index.html if you want)
+      window.location.href = 'login.html';
+    }, 1200);
+  }
+
+  // Auto-logout on page load
+  window.addEventListener('DOMContentLoaded', () => {
+    // perform logout immediately
+    doLogout();
+  });
+
+  // Manual controls
+  document.getElementById('logoutNow').addEventListener('click', doLogout);
+  document.getElementById('stay').addEventListener('click', ()=> {
+    // cancel logout and go back to dashboard if session exists, otherwise to login
+    const s = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+    if (s) window.location.href = 'dashboard.html';
+    else window.location.href = 'login.html';
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SGEAcad — Home</title>
+  <meta name="description" content="SGEAcad — Home. Click navigation to open other pages (register, login, CBT, dashboard, review)." />
+  <style>
+    :root{--bg:#f7fbfb;--teal:#047481;--amber:#f59e0b;--card:#fff;--muted:#6b7280}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,var(--bg),#fff);color:#062a2f}
+    .wrap{max-width:980px;margin:18px auto;padding:18px}
+    header{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(90deg,#013a3c,var(--teal));color:#fff;padding:12px;border-radius:8px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,var(--amber),#ffb86b);display:grid;place-items:center;font-weight:800}
+    nav{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+    .nav a{display:inline-block;padding:10px 12px;border-radius:8px;background:#fff;color:var(--teal);text-decoration:none;font-weight:700}
+    .card{background:var(--card);padding:14px;border-radius:8px;margin-top:14px;box-shadow:0 6px 18px rgba(2,6,23,.06)}
+    .muted{color:var(--muted);font-size:14px}
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+    .cta{display:inline-block;padding:10px 14px;border-radius:8px;background:var(--teal);color:#fff;text-decoration:none;font-weight:800}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">SG</div>
+        <div>
+          <div style="font-weight:900;font-size:18px">SGEAcad</div>
+          <div class="muted">UTME-style CBT — Multi-page build</div>
+        </div>
+      </div>
+      <div>
+        <a class="cta" href="cbt.html">Take CBT</a>
+      </div>
+    </header><nav class="nav">
+  <a href="index.html">Home</a>
+  <a href="register.html">Register</a>
+  <a href="login.html">Login</a>
+  <a href="dashboard.html">Dashboard</a>
+  <a href="cbt.html">CBT</a>
+  <a href="review.html">Review</a>
+  <a href="questions.html">Past Questions</a>
+</nav>
+
+<section class="card">
+  <h1>Welcome to SGEAcad</h1>
+  <p class="muted">This project uses separate HTML files for each page so navigation works reliably in editors like Acode on Android. Save all files in the same folder and open <strong>index.html</strong>.</p>
+
+  <h3 style="margin-top:12px">What you’ll get</h3>
+  <ul class="muted">
+    <li>Register & Login (localStorage demo)</li>
+    <li>Dashboard (saved results)</li>
+    <li>CBT engine (UTME format, timer, randomization)</li>
+    <li>Review page for answers</li>
+    <li>Medium curated question banks embedded in cbt.html for selected subjects</li>
+  </ul>
+
+  <p class="muted">Next: open <code>register.html</code> to create a demo account or go straight to <code>cbt.html</code> to try a sample test. Make sure all the files I create are placed in the same directory in Acode.</p>
+</section>
+
+<section class="card">
+  <h3>Quick deployment</h3>
+  <ol class="muted">
+    <li>Save these files into one folder in Acode: index.html, register.html, login.html, dashboard.html, cbt.html, review.html, questions.html</li>
+    <li>Open <strong>index.html</strong> in preview — navigation links will load the other pages.
+    </li>
+    <li>If a link shows "file not found", confirm the target file exists and file names match exactly (case-sensitive on some systems).
+    </li>
+  </ol>
+</section>
+
+<footer>© SGEAcad</footer>
+
+  </div>
+</body>
+</html>

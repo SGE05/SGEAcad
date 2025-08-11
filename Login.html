@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SGEAcad — Login</title>
+<meta name="description" content="SGEAcad Login Page" />
+<style>
+:root{
+  --bg:#f7fbfb;
+  --card:#fff;
+  --text:#062a2f;
+  --teal:#047481;
+  --amber:#f59e0b;
+  --muted:#6b7280;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--text);background:linear-gradient(180deg,var(--bg),#fff);}
+.container{max-width:400px;margin:5% auto;padding:20px;background:var(--card);border-radius:12px;box-shadow:0 8px 20px rgba(2,6,23,.1);}
+h1{text-align:center;color:var(--teal);margin-bottom:20px;}
+form{display:flex;flex-direction:column;gap:14px;}
+input[type=email], input[type=password]{
+  padding:12px;
+  border-radius:8px;
+  border:1px solid #e2e8f0;
+  font-size:16px;
+}
+button{
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  background:var(--teal);
+  color:#fff;
+  font-weight:700;
+  font-size:16px;
+  cursor:pointer;
+}
+.error-msg{
+  color:#ef4444;
+  font-weight:700;
+  margin-top:-10px;
+  margin-bottom:8px;
+  text-align:center;
+}
+.link-text{
+  text-align:center;
+  margin-top:10px;
+  font-size:14px;
+}
+.link-text a{
+  color:var(--amber);
+  text-decoration:none;
+  font-weight:700;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>SGEAcad Login</h1>
+  <form id="loginForm" novalidate>
+    <input type="email" id="email" placeholder="Email address" required autocomplete="username" />
+    <input type="password" id="password" placeholder="Password" required autocomplete="current-password" />
+    <div class="error-msg" id="errorMsg" role="alert" aria-live="assertive"></div>
+    <button type="submit">Login</button>
+  </form>
+  <div class="link-text">
+    Don't have an account? <a href="register.html">Register here</a>
+  </div>
+</div>
+
+<script>
+const loginForm = document.getElementById('loginForm');
+const errorMsg = document.getElementById('errorMsg');
+const SESSION_KEY = 'sgead_session_v1';
+const USERS_KEY = 'sgead_users_v1';
+
+loginForm.addEventListener('submit', e=>{
+  e.preventDefault();
+  errorMsg.textContent = '';
+  const email = loginForm.email.value.trim().toLowerCase();
+  const pass = loginForm.password.value;
+  if(!email || !pass){
+    errorMsg.textContent = 'Please enter your email and password.';
+    return;
+  }
+  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+  const user = users.find(u=>u.email.toLowerCase() === email && u.password === pass);
+  if(user){
+    localStorage.setItem(SESSION_KEY, JSON.stringify({email:user.email}));
+    window.location.href = 'dashboard.html';
+  } else {
+    errorMsg.textContent = 'Invalid email or password.';
+  }
+});
+</script>
+</body>
+</html>

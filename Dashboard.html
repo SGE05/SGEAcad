@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SGE CBT Dashboard</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f4f8;
+    margin: 0;
+    padding: 0;
+    color: #004d40;
+  }
+  header {
+    background-color: #00796b;
+    color: white;
+    padding: 20px 10px;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  nav {
+    background-color: #004d40;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 15px 0;
+  }
+  nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 8px 15px;
+  }
+  nav a:hover {
+    background-color: #00695c;
+    border-radius: 5px;
+  }
+  main {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  .welcome-box {
+    border-left: 6px solid #ffb300; /* amber accent */
+    padding-left: 15px;
+    margin-bottom: 30px;
+  }
+  .welcome-box h2 {
+    margin-top: 0;
+    color: #00796b;
+  }
+  .attempts-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  .attempts-table th, .attempts-table td {
+    border: 1px solid #ddd;
+    padding: 12px 15px;
+    text-align: left;
+  }
+  .attempts-table th {
+    background-color: #00796b;
+    color: white;
+  }
+  .btn {
+    background-color: #00796b;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 15px;
+  }
+  .btn:hover {
+    background-color: #004d40;
+  }
+  #noAttempts {
+    font-style: italic;
+    color: #666;
+  }
+</style>
+</head>
+<body>
+<header>SGE CBT Dashboard</header>
+<nav>
+  <a href="index.html">Home</a>
+  <a href="cbt.html">Take Test</a>
+  <a href="profile.html">Profile</a>
+  <a href="logout.html">Logout</a>
+</nav>
+<main>
+  <section class="welcome-box">
+    <h2>Welcome, Student</h2>
+    <p>Your Serial Number: <strong id="serialNumber">N/A</strong></p>
+  </section>
+
+  <section>
+    <h3>Previous CBT Attempts</h3>
+    <table class="attempts-table" id="attemptsTable" aria-label="Previous CBT Attempts">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Subject</th>
+          <th>Score</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody id="attemptsBody">
+        <tr><td colspan="4" id="noAttempts">No previous attempts found</td></tr>
+      </tbody>
+    </table>
+    <button id="startNewBtn" class="btn">Start New CBT</button>
+    <button id="reviewLastBtn" class="btn">Review Last Attempt</button>
+  </section>
+</main>
+
+<script>
+  // Retrieve logged in user's serial number
+  const serial = localStorage.getItem('serialNumber') || 'N/A';
+  document.getElementById('serialNumber').textContent = serial;
+
+  // Load previous attempts from localStorage
+  const attemptsBody = document.getElementById('attemptsBody');
+  const noAttemptsRow = document.getElementById('noAttempts');
+  let attempts = JSON.parse(localStorage.getItem('cbtAttempts_' + serial)) || [];
+<href> login.html
+  function renderAttempts() {
+    attemptsBody.innerHTML = '';
+    if(attempts.length === 0){
+      attemptsBody.innerHTML = `<tr><td colspan="4" id="noAttempts">No previous attempts found</td></tr>`;
+      document.getElementById('reviewLastBtn').disabled = true;
+    } else {
+      attempts.forEach((attempt, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${new Date(attempt.date).toLocaleString()}</td>
+          <td>${attempt.subject}</td>
+          <td>${attempt.score}%</td>
+          <td><button class="btn reviewBtn" data-index="${idx}" style="padding:6px 12px; font-size:0.9rem;">Review</button></td>
+        `;
+        attemptsBody.appendChild(tr);
+      });
+      document.getElementById('reviewLastBtn').disabled = false;
+    }
+  }
+  renderAttempts();
+
+  // Start new CBT button click
+  document.getElementById('startNewBtn').addEventListener('click', () => {
+    // Go to CBT page to start test
+    window.location.href = 'cbt.html';
+  });
+
+  // Review last attempt button click
+  document.getElementById('reviewLastBtn').addEventListener('click', () => {
+    if(attempts.length === 0){
+      alert('No attempts to review.');
+      return;
+    }
+    // Save last attempt index to localStorage to review on CBT page
+    localStorage.setItem('reviewAttemptIndex', attempts.length - 1);
+    window.location.href = 'cbt.html?review=true';
+  });
+
+  // Delegate review button clicks in attempts table
+  attemptsBody.addEventListener('click', e => {
+    if(e.target.classList.contains('reviewBtn')){
+      const index = e.target.getAttribute('data-index');
+      localStorage.setItem('reviewAttemptIndex', index);
+      window.location.href = 'cbt.html?review=true';
+    }
+  });
+// If user is logged in (serial SGE/25/26/00AB) When logged in
+  // If user is not logged in (serial N/A), redirect to login page
+  if(serial==='login.html')
+  if(serial === 'N/A'){
+    alert('Please log in first.');
+    window.location.href = 'index.html'; // or login.html if separate login page
+    <href> logout.html
+  }
+</script>
+</body>
+</html>

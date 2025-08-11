@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CBT Exam</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+.container {
+  max-width: 900px;
+  margin: auto;
+  background: #fff;
+  padding: 20px;
+  margin-top: 30px;
+  border-radius: 8px;
+}
+h1, h2 {
+  text-align: center;
+}
+button {
+  background: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+button:hover {
+  background: #218838;
+}
+.question-box {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+.options label {
+  display: block;
+  margin-bottom: 5px;
+}
+#timer {
+  font-size: 18px;
+  font-weight: bold;
+  color: red;
+  text-align: center;
+  display: none;
+}
+</style>
+</head>
+<body>
+
+<div class="container" id="start-screen">
+  <h1>CBT Examination</h1>
+  <p>Select Subject to begin</p>
+  <select id="subjectSelect">
+    <option value="">--Select Subject--</option>
+    <option value="Mathematics">Mathematics</option>
+    <option value="English">Use of English</option>
+    <option value="Physics">Physics</option>
+    <option value="Chemistry">Chemistry</option>
+    <option value="Biology">Biology</option>
+    <option value="Economics">Economics</option>
+    <option value="Government">Government</option>
+    <option value="Commerce">Commerce</option>
+    <option value="Accounting">Accounting</option>
+    <option value="Literature">Literature</option>
+    <option value="CRS">CRS</option>
+    <option value="Geography">Geography</option>
+    <option value="Agriculture">Agriculture</option>
+  </select>
+  <br><br>
+  <button id="startBtn">Start Exam</button>
+</div>
+
+<div class="container" id="exam-screen" style="display:none;">
+  <div id="timer">Time left: <span id="time"></span></div>
+  <form id="examForm"></form>
+  <br>
+  <button type="button" onclick="submitExam()">Submit Exam</button>
+</div>
+
+<div class="container" id="result-screen" style="display:none;">
+  <h2>Exam Completed</h2>
+  <p id="score"></p>
+  <button onclick="location.reload()">Restart</button>
+</div>
+
+<script>
+const questions = {
+  "Mathematics": [
+    {q: "What is 2 + 2?", options: ["3", "4", "5", "6"], answer: 1},
+    {q: "Find the value of x: 2x = 10", options: ["4", "5", "6", "7"], answer: 1}
+  ],
+  "English": [
+    {q: "Choose the correct synonym of 'Happy'", options: ["Sad", "Joyful", "Angry", "Tired"], answer: 1},
+    {q: "Which is a noun?", options: ["Run", "Quickly", "Table", "Blue"], answer: 2}
+  ],
+  "Physics": [
+    {q: "What is the SI unit of Force?", options: ["Newton", "Joule", "Pascal", "Watt"], answer: 0},
+    {q: "Speed is distance divided by?", options: ["Mass", "Time", "Energy", "Force"], answer: 1}
+  ],
+  "Chemistry": [
+    {q: "Water is a compound of?", options: ["Hydrogen & Oxygen", "Hydrogen only", "Oxygen only", "Carbon & Oxygen"], answer: 0},
+    {q: "Atomic number is the number of?", options: ["Protons", "Neutrons", "Electrons", "Atoms"], answer: 0}
+  ],
+  "Biology": [
+    {q: "The basic unit of life is?", options: ["Tissue", "Cell", "Organ", "Organism"], answer: 1},
+    {q: "Photosynthesis occurs in the?", options: ["Nucleus", "Chloroplast", "Mitochondria", "Cell wall"], answer: 1}
+  ],
+  "Economics": [
+    {q: "Economics is the study of?", options: ["Money", "Choice", "Scarcity", "Resources"], answer: 3},
+    {q: "Demand increases when?", options: ["Price rises", "Price falls", "Income falls", "None"], answer: 1}
+  ],
+  "Government": [
+    {q: "Who is the head of state in a parliamentary system?", options: ["President", "Prime Minister", "Governor", "King"], answer: 1},
+    {q: "Democracy means?", options: ["Rule by one", "Rule by many", "Rule by kings", "Rule by army"], answer: 1}
+  ],
+  "Commerce": [
+    {q: "Commerce deals with?", options: ["Buying & Selling", "Production only", "Farming only", "Mining"], answer: 0},
+    {q: "Import means?", options: ["Bringing goods in", "Sending goods out", "Producing goods", "Selling locally"], answer: 0}
+  ],
+  "Accounting": [
+    {q: "Assets = Liabilities + ?", options: ["Capital", "Expense", "Revenue", "Loan"], answer: 0},
+    {q: "Debit means?", options: ["Increase in asset", "Decrease in asset", "Increase in liability", "Decrease in liability"], answer: 0}
+  ],
+  "Literature": [
+    {q: "A play is meant to be?", options: ["Read only", "Performed", "Studied silently", "Memorized"], answer: 1},
+    {q: "Who wrote 'Things Fall Apart'?", options: ["Chimamanda Adichie", "Chinua Achebe", "Wole Soyinka", "Ngugi wa Thiong’o"], answer: 1}
+  ],
+  "CRS": [
+    {q: "Who betrayed Jesus?", options: ["Peter", "John", "Judas", "James"], answer: 2},
+    {q: "Moses received the 10 Commandments on?", options: ["Mount Zion", "Mount Sinai", "Mount Olives", "Mount Horeb"], answer: 1}
+  ],
+  "Geography": [
+    {q: "The earth rotates on its?", options: ["Axis", "Orbit", "Equator", "Poles"], answer: 0},
+    {q: "Largest ocean is?", options: ["Atlantic", "Pacific", "Indian", "Arctic"], answer: 1}
+  ],
+  "Agriculture": [
+    {q: "Crop rotation helps to?", options: ["Increase soil fertility", "Destroy crops", "Increase erosion", "Reduce yield"], answer: 0},
+    {q: "Which is a cash crop?", options: ["Yam", "Cocoa", "Maize", "Cassava"], answer: 1}
+  ]
+};
+
+let timeLeft = 600; // seconds (10 mins)
+let timerInterval;
+
+document.getElementById("startBtn").addEventListener("click", function(){
+  const subject = document.getElementById("subjectSelect").value;
+  if(!subject) {
+    alert("Please select a subject!");
+    return;
+  }
+  startExam(subject);
+});
+
+function startExam(subject){
+  document.getElementById("start-screen").style.display = "none";
+  document.getElementById("exam-screen").style.display = "block";
+  document.getElementById("timer").style.display = "block";
+  
+  loadQuestions(subject);
+  startTimer();
+}
+
+function loadQuestions(subject){
+  const examForm = document.getElementById("examForm");
+  examForm.innerHTML = "";
+  questions[subject].forEach((item, index) => {
+    const div = document.createElement("div");
+    div.classList.add("question-box");
+    let html = `<p><b>Q${index+1}:</b> ${item.q}</p><div class="options">`;
+    item.options.forEach((opt, i) => {
+      html += `<label><input type="radio" name="q${index}" value="${i}"> ${opt}</label>`;
+    });
+    html += `</div>`;
+    div.innerHTML = html;
+    examForm.appendChild(div);
+  });
+}
+
+function startTimer(){
+  timeLeft = 600; // reset
+  timerInterval = setInterval(function(){
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+    document.getElementById("time").textContent = `${minutes}:${seconds < 10 ? "0"+seconds : seconds}`;
+    if(timeLeft <= 0){
+      clearInterval(timerInterval);
+      submitExam();
+    }
+    timeLeft--;
+  }, 1000);
+}
+
+function submitExam(){
+  clearInterval(timerInterval);
+  let score = 0;
+  const subject = document.getElementById("subjectSelect").value;
+  questions[subject].forEach((item, index) => {
+    const ans = document.querySelector(`input[name="q${index}"]:checked`);
+    if(ans && parseInt(ans.value) === item.answer){
+      score++;
+    }
+  });
+  document.getElementById("exam-screen").style.display = "none";
+  document.getElementById("result-screen").style.display = "block";
+  document.getElementById("score").textContent = `You scored ${score} out of ${questions[subject].length}`;
+}
+</script>
+
+</body>
+</html>
