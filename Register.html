@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SGEAcad — Register</title>
+<meta name="description" content="SGEAcad Registration Page" />
+<style>
+:root{
+  --bg:#f7fbfb;
+  --card:#fff;
+  --text:#062a2f;
+  --teal:#047481;
+  --amber:#f59e0b;
+  --muted:#6b7280;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--text);background:linear-gradient(180deg,var(--bg),#fff);}
+.container{max-width:450px;margin:5% auto;padding:20px;background:var(--card);border-radius:12px;box-shadow:0 8px 20px rgba(2,6,23,.1);}
+h1{text-align:center;color:var(--teal);margin-bottom:20px;}
+form{display:flex;flex-direction:column;gap:14px;}
+input[type=text], input[type=email], input[type=password]{
+  padding:12px;
+  border-radius:8px;
+  border:1px solid #e2e8f0;
+  font-size:16px;
+}
+button{
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  background:var(--teal);
+  color:#fff;
+  font-weight:700;
+  font-size:16px;
+  cursor:pointer;
+}
+.error-msg{
+  color:#ef4444;
+  font-weight:700;
+  margin-top:-10px;
+  margin-bottom:8px;
+  text-align:center;
+}
+.success-msg{
+  color:#22c55e;
+  font-weight:700;
+  margin-top:-10px;
+  margin-bottom:8px;
+  text-align:center;
+}
+.link-text{
+  text-align:center;
+  margin-top:10px;
+  font-size:14px;
+}
+.link-text a{
+  color:var(--amber);
+  text-decoration:none;
+  font-weight:700;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>SGEAcad Register</h1>
+  <form id="regForm" novalidate>
+    <input type="text" id="surname" placeholder="Surname" required autocomplete="family-name" />
+    <input type="text" id="firstname" placeholder="First name" required autocomplete="given-name" />
+    <input type="email" id="email" placeholder="Email address" required autocomplete="email" />
+    <input type="password" id="password" placeholder="Password" required autocomplete="new-password" />
+    <input type="password" id="confirmPassword" placeholder="Confirm Password" required autocomplete="new-password" />
+    <div class="error-msg" id="errorMsg" role="alert" aria-live="assertive"></div>
+    <div class="success-msg" id="successMsg" role="alert" aria-live="polite"></div>
+    <button type="submit">Register</button>
+  </form>
+  <div class="link-text">
+    Already have an account? <a href="login.html">Login here</a>
+  </div>
+</div>
+
+<script>
+const regForm = document.getElementById('regForm');
+const errorMsg = document.getElementById('errorMsg');
+const successMsg = document.getElementById('successMsg');
+const USERS_KEY = 'sgead_users_v1';
+
+function generateSerialNumber(surname, firstname){
+  // Format: SGE/25/26/00AB
+  // A = first letter surname uppercase
+  // B = first letter firstname uppercase
+  const year1 = '25';
+  const year2 = '26';
+  const initialS = surname.trim()[0]?.toUpperCase() || 'X';
+  const initialF = firstname.trim()[0]?.toUpperCase() || 'X';
+  const randNum = Math.floor(Math.random()*90+10); // random 2 digit
+  return `SGE/${year1}/${year2}/00${initialS}${initialF}${randNum}`;
+}
+
+regForm.addEventListener('submit', e=>{
+  e.preventDefault();
+  errorMsg.textContent = '';
+  successMsg.textContent = '';
+
+  const surname = regForm.surname.value.trim();
+  const firstname = regForm.firstname.value.trim();
+  const email = regForm.email.value.trim().toLowerCase();
+  const pass = regForm.password.value;
+  const cpass = regForm.confirmPassword.value;
+
+  if(!surname || !firstname || !email || !pass || !cpass){
+    errorMsg.textContent = 'Please fill all fields.';
+    return;
+  }
+  if(pass.length < 6){
+    errorMsg.textContent = 'Password must be at least 6 characters.';
+    return;
+  }
+  if(pass !== cpass){
+    errorMsg.textContent = 'Passwords do not match.';
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+  if(users.find(u=>u.email === email)){
+    errorMsg.textContent = 'Email already registered.';
+    return;
+  }
+
+  const serial = generateSerialNumber(surname, firstname);
+
+  users.push({
+    surname,
+    firstname,
+    email,
+    password: pass,
+    serialNumber: serial
+  });
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+
+  successMsg.textContent = `Registration successful! Your login serial number is: ${serial}`;
+  setTimeout(()=>{
+    window.location.href = 'login.html';
+  },4000);
+});
+</script>
+</body>
+</html>
